@@ -279,11 +279,7 @@ def create_app(test_config=None):
 
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({
-            "success": False, 
-            "error": 404,
-            "message": "Not found"
-            }), 404
+        return jsonify(), 404
 
     @app.errorhandler(422)
     def unproccessable_entity(error):
