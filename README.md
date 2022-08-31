@@ -1,49 +1,335 @@
-# API Development and Documentation Final Project
+# trivia-game-for-udacity-nanodegree
+The trivia game is a fun and interactive game made to test users on their knowledge in various fields of human endeavour. It was created with the intention of having fun while also learning and discovering facts.
+  The trivia game is made up of two main folders:
+  
+  - **backend**
+  
+  - **frontend**
+  
+The backend includes the files and dependencies for running the api and databases while the frontend is a flask app responsible for serving the data from the backend to the users.
+    
+# Getting started
 
-## Trivia App
+### Prerequisites & Installation
 
-Udacity is invested in creating bonding experiences for its employees and students. A bunch of team members got the idea to hold trivia on a regular basis and created a webpage to manage the trivia app and play the game, but their API experience is limited and still needs to be built out.
+  The project requires the following to be installed:
+- python version 3.7 and above
+- pip
+- node and npm
+- virtualenv(optional)
 
-That's where you come in! Help them finish the trivia app so they can start holding trivia and seeing who's the most knowledgeable of the bunch. The application must:
-
-1. Display questions - both all questions and by category. Questions should show the question, category and difficulty rating by default and can show/hide the answer.
-2. Delete questions.
-3. Add questions and require that they include question and answer text.
-4. Search for questions based on a text query string.
-5. Play the quiz game, randomizing either all questions or within a specific category.
-
-Completing this trivia app will give you the ability to structure plan, implement, and test an API - skills essential for enabling your future applications to communicate with others.
-
-## Starting and Submitting the Project
-
-[Fork](https://help.github.com/en/articles/fork-a-repo) the project repository and [clone](https://help.github.com/en/articles/cloning-a-repository) your forked repository to your machine. Work on the project locally and make sure to push all your changes to the remote repository before submitting the link to your repository in the Classroom.
-
-## About the Stack
-
-We started the full stack application for you. It is designed with some key functional areas:
-
+To begin using the app, refer to the setup guidelines below:
 ### Backend
-
-The [backend](./backend/README.md) directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in `__init__.py` to define your endpoints and can reference models.py for DB and SQLAlchemy setup. These are the files you'd want to edit in the backend:
-
-1. `backend/flaskr/__init__.py`
-2. `backend/test_flaskr.py`
-
-> View the [Backend README](./backend/README.md) for more details.
+Navigate into the backend folder and initialize your virtual environment. Once this is done you can proceed to installing the dependencies by running `pip install -r requirements.txt` or `pip3 install -r requirements.txt`. Proceed to setup your postgres database and linking it to the app through the models.py file. 
+  Running the `psql trivia < trivia.psql` command will prepopulate the database with a set of demo questions which can be deleted later. To run the application use :
+  ```
+  export FLASK_APP=flaskr 
+  export FLASK_ENV=development
+  flask run
+  ```
+This command will start up a localhost at port 5000 and use the ____init____.py file within our flaskr folder as the default flask app.
 
 ### Frontend
+The frontend is created with the react framework and will not load successfully if the backend is not setup first. To install the frontend dependencies, navigate to the frontend directory and run:
+  `npm install`
+This will install the depencies and create a node_modules folder within the frontend directory. Run `npm start` to begin the frontend in developer mode.
 
-The [frontend](./frontend/README.md) directory contains a complete React frontend to consume the data from the Flask server. If you have prior experience building a frontend application, you should feel free to edit the endpoints as you see fit for the backend you design. If you do not have prior experience building a frontend application, you should read through the frontend code before starting and make notes regarding:
+## Test
+The application has some pre-written tests in the test_flaskr.py file. Use the commands below in other to run tests:
+```
+  dropdb trivia_test
+  createdb trivia_test
+  psql trivia_test < trivia.psql
+  python test_flaskr.py
+```
+The first command above drops the trivia_test database if it already exits. If not it can be skipped. The second command creates a new test database(this is done do that our original database items will not be tempered with). The third command prepopulates our test database with dummy data so that tests can be ran on it and the fourth command simply starts the tests.
+Note: Remember to set the test database name in your test_flaskr.py file
 
-1. What are the end points and HTTP methods the frontend is expecting to consume?
-2. How are the requests from the frontend formatted? Are they expecting certain parameters or payloads?
+# API REFERENCE
+## Getting started
+Base url: The application is hosted locally, so there is no base url for the project.
 
-Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API. The places where you may change the frontend behavior, and where you should be looking for the above information, are marked with `TODO`. These are the files you'd want to edit in the frontend:
+Authentication/Api keys: Both are absent for the app. 
 
-1. `frontend/src/components/QuestionView.js`
-2. `frontend/src/components/FormView.js`
-3. `frontend/src/components/QuizView.js`
+## Errors:
 
-By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
+Errors are given in JSON format. 
 
-> View the [Frontend README](./frontend/README.md) for more details.
+Example:
+```
+{
+"success": False, 
+"error": 405,
+"message": "Method not allowed for this endpoint!"
+}
+  
+{
+  "success": False, 
+  "error": 404,
+  "message": "Not found"
+}
+```
+ 
+Messages:
+
+404:Not found
+
+422:Unprocessable
+
+405:method_not_allowed
+
+400:Bad Request
+
+500:Server error
+
+## ENDPOINTS
+
+### `GET '/categories'`
+
+  -Returns a dictionary of which the keys are the ids and value is a string of the category
+  
+  -Request arguments: None
+  
+  -Returns an object of category type and success
+  
+Example: `curl http://127.0.0.1:5000/categories`
+```
+{
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "success": True
+}
+```
+
+### `GET '/questions'`
+
+-Returns an object of success, paginated questions(10 questions per page), categories (object), current categories of the returned questions(list) and total questions(integer)
+
+-No arguments 
+
+Example: `curl http://127.0.0.1:5000/questions`
+```
+{
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "current_category": [
+        "Entertainment",
+        "Entertainment",
+        "Sports",
+        "Geography",
+        "Geography",
+        "Geography",
+        "Art",
+        "Art",
+        "Art",
+        "Art"
+    ],
+    "questions": [
+        {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2,
+            "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+            "answer": "Edward Scissorhands",
+            "category": 5,
+            "difficulty": 3,
+            "id": 6,
+            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        },
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        },
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+        },
+        {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        }
+    ],
+    "success": True,
+    "total_questions": 19
+}
+```
+
+### `DELETE '/questions/{question_id}'`
+
+-Deletes a particular question based on the id given
+
+-Requires an id argument
+
+-Returns a success key of true
+
+Example: `curl -X DELETE http://127.0.0.1:5000/questions/12`
+```
+{
+    "success":True
+}
+```
+
+### `POST '/add_questions'`
+
+-Adds a new question to the database 
+
+-Body of the request should include question(string), answer(string), category(integer) and difficulty(integer).
+
+-Returns a success value of True
+
+Example: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Who is ada lovelace in the world of computing?", "answer":"Ada lovelace is regarded to be the very first programmer", "difficulty":"4", "category": "5"}'`
+```
+{
+"success":True
+}
+```
+
+### `POST '/search_questions'`
+
+-Searches for question with the search term
+
+-Requires a 'searchTerm' body in the request
+
+-Returns a response of success, paginated questions(10 per page), total_questions(int), current category of the response questions(list).
+
+Example: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"searchTerm":"title"}'`
+```
+{
+    "current_category": [
+        "Entertainment"
+    ],
+    "questions": [
+        {
+            "answer": "Edward Scissorhands",
+            "category": 5,
+            "difficulty": 3,
+            "id": 6,
+            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        }
+    ],
+    "success":True,
+    "total_questions": 1
+}
+```
+
+### `GET '/categories/{category id}/questions'`
+
+-Gets the questions of a particular category
+
+-Requires a category id argument
+
+-Returns a success value, paginated questions(10 per page), current category of the returned questions(list) and a total questions object(int).
+
+Example: `curl http://127.0.0.1:5000/categories/3/questions`
+```
+{
+    "current_category": [
+        "Geography",
+        "Geography"
+    ],
+    "questions": [
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": True,
+    "total_questions": 2
+}
+```
+
+### `POST '/quzzies'`
+
+-Enables users to play the game
+
+-Requires a request body of previous_questions(list) and quiz_category(object) with key of id and value(int).
+
+-Returns success and question(object)
+
+Example: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"quiz_category": {"id": 6}, "previous_questions": []}'`
+```
+{
+    "category": "Sports",
+    "question": {
+        "answer": "Uruguay",
+        "category": 6,
+        "difficulty": 4,
+        "id": 11,
+        "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    "success": true,
+}
+```
+
+# Acknowledgements
+The awesome team at Udacity and all my fellow students who helped through their hints and beautiful ideas, soon to be full stack extraordinaires!
+
