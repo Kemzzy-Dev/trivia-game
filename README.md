@@ -1,4 +1,4 @@
-# trivia-game-for-udacity-nanodegree
+# trivia-game
 The trivia game is a fun and interactive game made to test users on their knowledge in various fields of human endeavour. It was created with the intention of having fun while also learning and discovering facts.
   The trivia game is made up of two main folders:
   
